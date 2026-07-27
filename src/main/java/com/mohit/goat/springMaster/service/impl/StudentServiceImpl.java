@@ -31,10 +31,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public StudentDto getStudentById(Long id) {
-        if(!studentRepository.existsById(id)) {
-            throw new IllegalArgumentException("Student not exits with id: " + id);
-        }
-        Optional<Student> student = studentRepository.findById(id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Student not exists with id: " + id));
+
         return modelMapper.map(student, StudentDto.class);
     }
 
@@ -51,5 +51,16 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("Student doesn't exits of id: " + id);
         }
         studentRepository.deleteById(id);
+    }
+
+    @Override
+    public StudentDto updateFullStudent(Long id, AddStudentRequestDto addStudentRequestDto) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Student not exists with id: " + id));
+
+        modelMapper.map(addStudentRequestDto, student);
+        Student updatedStudent = studentRepository.save(student);
+        return modelMapper.map(updatedStudent, StudentDto.class);
     }
 }

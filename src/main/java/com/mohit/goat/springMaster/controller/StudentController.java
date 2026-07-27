@@ -59,4 +59,9 @@ public class StudentController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StudentDto> updateFullStudent(@PathVariable Long id, @RequestBody AddStudentRequestDto addStudentRequestDto) {
+        return ResponseEntity.ok(studentService.updateFullStudent(id, addStudentRequestDto));
+    }
 }
