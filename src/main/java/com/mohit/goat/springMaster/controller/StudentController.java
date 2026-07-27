@@ -3,12 +3,14 @@ package com.mohit.goat.springMaster.controller;
 import com.mohit.goat.springMaster.dto.AddStudentRequestDto;
 import com.mohit.goat.springMaster.dto.StudentDto;
 import com.mohit.goat.springMaster.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class StudentController {
     }
 
     @PostMapping("")
-    public ResponseEntity<StudentDto> createNewStudent(@RequestBody AddStudentRequestDto addStudentRequestDto) {
+    public ResponseEntity<StudentDto> createNewStudent(@RequestBody @Valid AddStudentRequestDto addStudentRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createNewStudent(addStudentRequestDto));
     }
 
@@ -61,7 +63,22 @@ public class StudentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentDto> updateFullStudent(@PathVariable Long id, @RequestBody AddStudentRequestDto addStudentRequestDto) {
-        return ResponseEntity.ok(studentService.updateFullStudent(id, addStudentRequestDto));
+    public ResponseEntity<StudentDto> updateFullStudent(@PathVariable Long id, @RequestBody @Valid AddStudentRequestDto addStudentRequestDto) {
+        try{
+            return ResponseEntity.ok(studentService.updateFullStudent(id, addStudentRequestDto));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<StudentDto> updatePartialStudent(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        try {
+            return ResponseEntity.ok(studentService.updatePartialStudent(id, updates));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
