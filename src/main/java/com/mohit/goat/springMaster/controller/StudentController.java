@@ -25,11 +25,16 @@ public class StudentController {
 //        return ResponseEntity.status(HttpStatus.OK).body(studentService.getAllStudents());
     }
 
-//    @GetMapping("/{id}/{name}")
-//    public StudentDto getStudentById(@PathVariable("id") Long studentId, @PathVariable String name) {
-//        return studentService.getStudentById(studentId);
-    // path params
-//    }
+    @GetMapping("/{id}/{name}")
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable("id") Long studentId, @PathVariable String name) {
+        try {
+            StudentDto studentDto = studentService.getStudentById(studentId);
+            return ResponseEntity.ok(studentDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+//     path params
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id) {
